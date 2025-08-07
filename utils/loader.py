@@ -1,6 +1,6 @@
 import pandas as pd
 from tkinter import filedialog, messagebox
-from palavras import cordenadas
+from utils.palavras import cordenadas
 import os
 import json
 
