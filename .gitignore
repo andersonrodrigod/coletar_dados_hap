@@ -1,0 +1,6 @@
+.venv
+__pycache__
+cordenadas.json
+dados_analitics.json
+dados_coletados.json
+processos.json
