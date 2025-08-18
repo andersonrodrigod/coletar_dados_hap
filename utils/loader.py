@@ -36,6 +36,23 @@ def criar_arquivo_cordenadas(caminho_pasta):
         df.to_json("cordenadas.json", orient="records", indent=4)
         print("arquivo criado com sucesso")
 
+def criar_arquivo_copiador(caminho_pasta):
+    if caminho_pasta and not os.path.exists(os.path.join(caminho_pasta, "copiador.json")):
+        copiador = {
+            "1": {f"f{i}": "" for i in range(1, 13)},
+            "2": {f"f{i}": "" for i in range(1, 13)},
+            "3": {f"f{i}": "" for i in range(1, 13)}
+        }
+
+        arquivo = os.path.join(caminho_pasta, "copiador.json")
+        with open(arquivo, "w", encoding="utf-8") as f:
+            json.dump(copiador, f, ensure_ascii=False, indent=4)
+
+        print("Arquivo criado com sucesso:", arquivo)
+    else:
+        print("Arquivo já existe ou caminho inválido")
+
+
 def criar_arquivo_processos(caminho_pasta):
     if caminho_pasta and not os.path.exists(caminho_pasta + "/processos.json"):
         df = pd.DataFrame()

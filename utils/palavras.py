@@ -1,13 +1,18 @@
 substituicoes = {
-    "TC": "TOMOGRAFIA DE",
-    "RM": "RESSONÂNCIA DE",
-    "RMN": "RESSONÂNCIA DE",
-    "RNM": "RESSONÂNCIA DE",
-    "RX": "RAIO-X DE",
-    "USG": "ULTRASSOM DE",
+    "TC": "TOMOGRAFIA",
+    "RM": "RESSONÂNCIA",
+    "RMN": "RESSONÂNCIA",
+    "RNM": "RESSONÂNCIA",
+    "RX": "RAIO-X",
+    "USG": "ULTRASSOM",
     "USGTV": "ULTRASSOM TRANSVAGINAL",
+    "USGTVG": "ULTRASSOM TRANSVAGINAL",
+    "USTV": "ULTRASSOM TRANSVAGINAL",
+    "USTVG": "ULTRASSOM TRANSVAGINAL",
+    "TV": "TRANSVAGINAL",
     "US OBSTETRICA": "ULTRASSOM OBSTETRICA",
     "US": "ULTRASSOM DE",
+    "EDA": "ENDOSCOPIA DIGESTIVA ALTA",
     "ANEXAR": "",
     "ITM": "",
     "OCT": "TOMOGRAFICA DE OCOERENCIA OPTICA",
@@ -100,7 +105,6 @@ cordenadas = {
     "tela_amop": "viado 1",
     "tela_t22a3": "viado 2"
 }
-
 
 # ------------------------------------------------------------- // ----------------------------------------------------------------------------
 

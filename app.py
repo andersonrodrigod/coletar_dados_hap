@@ -3,6 +3,7 @@ from ui.menu import Menu
 from ui.carregar import Carregar
 from ui.formatar_texto import Formatar_texto
 from ui.check_list import Check_list
+from ui.copiador import Copiador
 
 class App(ctk.CTk):
     def __init__(self, title, size):
@@ -19,10 +20,13 @@ class App(ctk.CTk):
         self.check_list = Check_list(self)
         self.check_list.withdraw()
 
+        self.copiador_texto = Copiador(self)
+        self.copiador_texto.withdraw()
+
         self.formatar_texto = Formatar_texto(self)
         self.formatar_texto.withdraw()
 
-        self.menu = Menu(self, self.formatar_texto, self.check_list)
+        self.menu = Menu(self, self.formatar_texto, self.check_list, self.copiador_texto)
         self.carregar = Carregar(self, self.menu, self)
         self.carregar.grid(row=0, column=0, columnspan=3, sticky="nsew")
 
