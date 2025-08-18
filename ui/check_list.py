@@ -10,7 +10,7 @@ class Check_list(ctk.CTkToplevel):
     def __init__(self, parent):
         super().__init__(parent)
         self.parent = parent
-        self.geometry("1230x800")
+        self.geometry("1330x800")
         self.container = ctk.CTkFrame(self)
         self.container.pack(padx=20, pady=20)
 
@@ -41,13 +41,6 @@ class Check_list(ctk.CTkToplevel):
         self.data_entry = ctk.CTkEntry(self.data_hora_frame, width=120)
         self.data_entry.grid(row=0, column=1, padx=5, pady=5)
         
-        # Campo de entrada para hora (opcional)
-        self.hora_label = ctk.CTkLabel(self.data_hora_frame, text="Hora (HH:MM):")
-        self.hora_label.grid(row=0, column=2, padx=5, pady=5)
-        
-        self.hora_entry = ctk.CTkEntry(self.data_hora_frame, width=80)
-        self.hora_entry.grid(row=0, column=3, padx=5, pady=5)
-        
         # Botão para filtrar por data
         self.botao_filtrar_data = ctk.CTkButton(
             self.data_hora_frame, 
@@ -56,13 +49,6 @@ class Check_list(ctk.CTkToplevel):
         )
         self.botao_filtrar_data.grid(row=0, column=4, padx=5, pady=5)
         
-        # Botão para filtrar por data e hora
-        self.botao_filtrar_data_hora = ctk.CTkButton(
-            self.data_hora_frame, 
-            text="Filtrar Data+Hora", 
-            command=self.filtrar_por_data_hora
-        )
-        self.botao_filtrar_data_hora.grid(row=0, column=5, padx=5, pady=5)
 
         # Adicione isso no self.data_hora_frame, depois dos outros botões
         self.botao_remover_nao_encontrados = ctk.CTkButton(
@@ -72,7 +58,7 @@ class Check_list(ctk.CTkToplevel):
             fg_color="#d00000",  # Vermelho para indicar ação destrutiva
             hover_color="#9d0208"
         )
-        self.botao_remover_nao_encontrados.grid(row=0, column=6, padx=5, pady=5)
+        self.botao_remover_nao_encontrados.grid(row=0, column=5, padx=5, pady=5)
         
         # Frame para os botões principais (confirmar/atualizar)
         self.botoes_frame = ctk.CTkFrame(self.controles_frame)
@@ -116,23 +102,36 @@ class Check_list(ctk.CTkToplevel):
             self.criar_botoes_filtros()
 
     def criar_botoes_grupo(self):
+
+        # Cria o DataFrame com os dados atuais
+        df = pd.DataFrame(self.dados)
+            # Remove os "removidos"
+        if "removido" in df.columns:
+            df = df[df["removido"] != True]
+
+        # Conta os processos por grupo
+        qtd_rodrigo = df[df["nome"].str[0].str.upper().isin(self.grupo_1)].shape[0]
+        qtd_keisiane = df[df["nome"].str[0].str.upper().isin(self.grupo_2)].shape[0]
+        qtd_gabriel = df[df["nome"].str[0].str.upper().isin(self.grupo_3)].shape[0]
+        qtd_geral = df.shape[0] 
+        
         ctk.CTkButton(
-            self.grupo_frame, text="Rodrigo", 
+            self.grupo_frame, text=f"Rodrigo ({qtd_rodrigo})", 
             command=lambda: self.selecionar_grupo("RODRIGO", self.grupo_1)
         ).grid(row=0, column=0, padx=5, pady=5)
 
         ctk.CTkButton(
-            self.grupo_frame, text="Keisiane", 
+            self.grupo_frame, text=f"Keisiane ({qtd_keisiane})", 
             command=lambda: self.selecionar_grupo("KEISIANE", self.grupo_2)
         ).grid(row=0, column=1, padx=5, pady=5)
 
         ctk.CTkButton(
-            self.grupo_frame, text="Gabriel", 
+            self.grupo_frame, text=f"Gabriel ({qtd_gabriel})", 
             command=lambda: self.selecionar_grupo("GABRIEL", self.grupo_3)
         ).grid(row=0, column=2, padx=5, pady=5)
 
         ctk.CTkButton(
-            self.grupo_frame, text="Geral", 
+            self.grupo_frame, text=f"Geral ({qtd_geral})", 
             command=lambda: self.selecionar_grupo("GERAL", self.grupo_4)
         ).grid(row=0, column=3, padx=5, pady=5)
 
@@ -175,6 +174,8 @@ class Check_list(ctk.CTkToplevel):
         # Filtra por tipo de processo, se diferente de "TODOS"
         if tipo_processo and tipo_processo.upper() != "TODOS":
             df = df[df["tipo"].str.upper().str.contains(tipo_processo.upper())]
+
+        print(f"Quantidade encontrada: {len(df)}")
 
         self.criar_widgets_processos(df)
 
@@ -263,8 +264,6 @@ class Check_list(ctk.CTkToplevel):
         except Exception as e:
             print(f"Erro inesperado: {e}")
 
-    
-
     def filtrar_por_data_hora(self):
         data_str = self.data_entry.get()
         hora_str = self.hora_entry.get()
@@ -339,6 +338,23 @@ class Check_list(ctk.CTkToplevel):
                 )
                 checkbox.grid(row=linha, column=idx, padx=10, pady=5)
 
+            obs_var = tk.StringVar(value=row.get("obs", ""))
+
+            obs_entry = ctk.CTkEntry(frame, width=400, font=("Arial", 12), textvariable=obs_var)
+            obs_entry.grid(row=linha, column=4, padx=10, pady=5, sticky="w")
+
+            # Detectar mudanças no campo e salvar no dicionário de alterações
+            obs_var.trace_add("write", lambda *args, r=row, v=obs_var: self.on_obs_change(r, v))
+
+    def on_obs_change(self, pessoa, var):
+        novo_valor = var.get()
+        pessoa["obs"] = novo_valor
+
+        codigo = pessoa["codigo"]
+        self.alteracoes_checkboxes[codigo] = pessoa
+
+        print(f"[OBS] Alterado para '{novo_valor}' | Código: {codigo}")
+
     def on_checkbox_click(self, pessoa, tipo, checkbox_var):
         novo_valor = checkbox_var.get()
         pessoa[tipo] = novo_valor
@@ -404,7 +420,8 @@ class Check_list(ctk.CTkToplevel):
                 "resolvido": pessoa.get("resolvido", False),
                 "visto_data_hora": pessoa.get("visto_data_hora", []),
                 "resolvido_data_hora": pessoa.get("resolvido_data_hora", []),
-                "removido": pessoa.get("removido", False)
+                "removido": pessoa.get("removido", False),
+                "obs": pessoa.get("obs", "")
             }
 
             if campos["resolvido"]:
