@@ -82,6 +82,11 @@ class Check_list(ctk.CTkToplevel):
 
         self.alteracoes_checkboxes = {}
 
+        self.protocol("WM_DELETE_WINDOW", self.fechar)
+    
+    def fechar(self):
+        self.withdraw()
+
     def carregar_dados_processos(self):
         caminho_arquivo = f"{self.parent.caminho_pasta}/processos.json"
         df = ler_arquivo(caminho_arquivo)

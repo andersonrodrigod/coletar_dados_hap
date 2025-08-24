@@ -20,6 +20,10 @@ class Copiador(ctk.CTkToplevel):
         self._bind_keys()
         self.show_page(1)
 
+        self.protocol("WM_DELETE_WINDOW", self.fechar)
+
+    def fechar(self):
+        self.withdraw()
 
     def _setup_ui(self):
         """Configura a interface"""

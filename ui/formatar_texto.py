@@ -15,6 +15,11 @@ class Formatar_texto(ctk.CTkToplevel):
         self.btn_transformar = ctk.CTkButton(self, text="Transformar Texto", command=self.aplicar_substituicoes)
         self.btn_transformar.pack()
 
+        self.protocol("WM_DELETE_WINDOW", self.fechar)
+
+    def fechar(self):
+        self.withdraw()    
+
     def aplicar_substituicoes(self):
         texto = self.text_area.get("1.0", "end-1c")  # pega todo o texto do textarea
         for antigo, novo in substituicoes.items():
