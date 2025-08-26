@@ -38,7 +38,6 @@ def nome_prestador():
 def nome_auditor():
     return pyperclip.paste()
 
-
 def encontrar_palavra(palavras, info):
     for palavra in palavras:
         if palavra in info:
@@ -55,7 +54,7 @@ def obter_palavra(palavra, mapeamento_palavras):
 
 def garantir_copia_info():
     tentativas = 0
-    while tentativas < 7:
+    while tentativas < 3:
         py.hotkey("ctrl", "c")  
         time.sleep(0.3)
 
@@ -68,6 +67,17 @@ def garantir_copia_info():
 
     #print("Falha ao copiar. Pressionando Enter duas vezes...")
     return None
+
+def garantir_copia_info2():
+    tentativas = 0
+    while tentativas < 2:
+        texto = pyperclip.paste()
+        if texto:  # se tiver algo no clipboard
+            return texto
+        py.hotkey("ctrl", "c")  # tenta copiar de novo
+        time.sleep(0.3)
+        tentativas += 1
+    raise RuntimeError("Falha ao copiar o texto após 7 tentativas.")
 
     
 
@@ -92,11 +102,15 @@ def copy_info():
 
 def copy():
     py.hotkey("ctrl", "c")
-    garantir_copia()
+    time.sleep(0.2)  # só dá um tempo pro sistema copiar
+
+def copy_info2():
+    py.hotkey("ctrl", "c")
+    time.sleep(0.2) 
 
 def tab():
     py.press("tab")
-    time.sleep(0.3)
+    time.sleep(0.1)
 
 def shift_tab():
     py.hotkey("shift", "tab")
@@ -184,10 +198,28 @@ def save_data(caminho_arquivo, cordenadas_caminho):
             codigo_in_dados = df[df["codigo"] == codigo]
             procedimento_in_dados = codigo_in_dados["codigo_procedimento"].values
             if codigo_procedimento in procedimento_in_dados:
-                #print("código em banco de dados")
+                copy_click_info(cordenada_info_assistente_x, cordenada_info_assistente_y)
+                info_assistente = info_assistent()
+
+                copy_vazio()
+
+                copy_click_info(cordenada_info_medico_x, cordenada_info_medico_y)
+                info_medic = info_medico()
+
+                copy_vazio()
+
+                # Atualiza dentro do DataFrame apenas os campos necessários
+                df.loc[df["codigo"] == codigo, "info_assistente"] = f"{info_assistente}."
+                df.loc[df["codigo"] == codigo, "info_medico"] = f"{info_medic}."
+
+                # Salva os dados atualizados
+                salvar_dados(df.to_dict(orient="records"), caminho_arquivo)
+
+                # Segue para o resto do fluxo
                 py.click(cordenada_codigo_carteira_x, cordenada_codigo_carteira_y)
                 py.press("down")
                 return
+
 
         copy_vazio()
         tab()
@@ -204,7 +236,7 @@ def save_data(caminho_arquivo, cordenadas_caminho):
         copy_vazio()
         tab()
 
-        copy()
+        copy_info2()
         auditor = nome_auditor()
 
         copy_vazio()
@@ -238,7 +270,7 @@ def save_data(caminho_arquivo, cordenadas_caminho):
             "prestador": prestador,
             "auditor": auditor,
             "medico_solicitante": medico_solicitante,
-            "data_hora_bot": [f"{data} {hora}"]
+            "data_hora_bot": f"{data} {hora}"
         }
 
         dados_existentes.append(dados)

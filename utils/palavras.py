@@ -33,6 +33,7 @@ substituicoes = {
     "BNF": "",
     "COM BNF": "",
     "ROB": "",
+    "STT": "SOLICITANTE",
     " ,": "",
     " , ": "",
     " .": "",

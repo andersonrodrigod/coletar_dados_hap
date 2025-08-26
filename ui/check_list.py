@@ -70,9 +70,9 @@ class Check_list(ctk.CTkToplevel):
         self.botao_atualizar = ctk.CTkButton(self.botoes_frame, text="Atualizar", command=self.atualizar_interface)
         self.botao_atualizar.pack(side="left", padx=10)
 
-        self.grupo_1 = list("ABCDEFGHI")
-        self.grupo_2 = list("JKLMNOPQR")
-        self.grupo_3 = list("STUVWXYZ")
+        self.grupo_1 = list("DJLPQRVWZ") #BFHM
+        self.grupo_2 = list("ACEGIKOXY") #NSTU
+        self.grupo_3 = list("BFHMNSTU")
         self.grupo_4 = list("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
         self.grupo_atual = "GERAL"
