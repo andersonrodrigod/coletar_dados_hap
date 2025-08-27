@@ -220,15 +220,10 @@ class Check_list(ctk.CTkToplevel):
 
     def remover_nao_encontrados(self):
         data_str = self.data_entry.get()
-        hora_str = self.hora_entry.get()
         
         try:
-            # Converter para datetime
-            if hora_str:
-                data_hora_str = f"{data_str} {hora_str}"
-                filtro = datetime.strptime(data_hora_str, "%d/%m/%Y %H:%M")
-            else:
-                filtro = datetime.strptime(data_str, "%d/%m/%Y").date()
+            # Converter somente para data
+            filtro = datetime.strptime(data_str, "%d/%m/%Y").date()
             
             # Carregar dados
             df = pd.DataFrame(self.dados)
@@ -239,8 +234,7 @@ class Check_list(ctk.CTkToplevel):
             # Criar coluna temporária para verificação
             df_nao_removidos['possui_data'] = df_nao_removidos['data_hora_bot'].apply(
                 lambda x: any(
-                    pd.to_datetime(item, errors='coerce') == filtro if hora_str
-                    else pd.to_datetime(item, errors='coerce').date() == filtro
+                    pd.to_datetime(item, errors='coerce').date() == filtro
                     for item in (x if isinstance(x, list) else [])
                 )
             )
